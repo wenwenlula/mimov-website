@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mimov Pilates</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:     #ECEAE7;
+      --bg2:    #E4E2DF;
+      --text:   #1C1C1C;
+      --muted:  #888884;
+      --accent: #A09A92;
+      --border: #D2D0CD;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    /* texture applied via JS canvas */
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 28px 52px;
+      background: linear-gradient(to bottom, rgba(236,234,231,0.97) 60%, transparent);
+    }
+
+    .nav-logo img { height: 28px; opacity: 0.88; }
+
+    .nav-right { display: flex; align-items: center; gap: 40px; }
+
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-size: 10.5px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-decoration: none;
+      opacity: 0.55;
+      transition: opacity 0.25s;
+    }
+    .nav-links a:hover { opacity: 1; }
+
+    .lang-toggle { display: flex; align-items: center; gap: 7px; }
+    .lang-btn {
+      background: none; border: none; cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 10.5px; letter-spacing: 0.12em;
+      color: var(--text); opacity: 0.35; padding: 0;
+      transition: opacity 0.25s;
+    }
+    .lang-btn.active { opacity: 1; }
+    .lang-btn:hover  { opacity: 0.75; }
+    .lang-sep { font-size: 10px; opacity: 0.25; }
+
+    /* ── HERO (split) ── */
+    #hero {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 120px 64px 80px 64px;
+    }
+
+    .hero-logo {
+      width: 200px;
+      max-width: 45vw;
+      margin-bottom: 56px;
+      opacity: 0.88;
+    }
+
+    .hero-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 4.5vw, 64px);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.15;
+      margin-bottom: 22px;
+    }
+
+    .hero-sub {
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      max-width: 340px;
+      line-height: 1.95;
+      margin-bottom: 52px;
+    }
+
+    .hero-line {
+      width: 40px; height: 1px;
+      background: var(--accent); opacity: 0.6;
+    }
+
+    .hero-right {
+      overflow: hidden;
+    }
+    .hero-right img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.92) saturate(0.75);
+    }
+
+    /* ── SECTION LABEL ── */
+    .label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 52px;
+    }
+
+    /* ── PHOTO STRIP ── */
+    #gallery {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3px;
+    }
+    .gallery-img {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+    }
+    .gallery-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.93) saturate(0.78);
+      transition: transform 0.6s ease, filter 0.4s ease;
+    }
+    .gallery-img:hover img {
+      transform: scale(1.04);
+      filter: brightness(0.97) saturate(0.9);
+    }
+
+    /* ── ABOUT ── */
+    #about {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 130px 52px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 88px;
+      align-items: start;
+    }
+
+    .about-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(28px, 3.6vw, 50px);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.25;
+    }
+
+    .about-body p {
+      font-size: 14.5px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.95;
+      margin-bottom: 22px;
+    }
+    .about-body p:last-child { margin-bottom: 0; }
+
+    /* ── SERVICES ── */
+    #services { background: var(--bg2); padding: 120px 52px; }
+    .services-inner { max-width: 1080px; margin: 0 auto; }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 0;
+    }
+
+    .svc-card { overflow: hidden; }
+
+    .svc-photo {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.92) saturate(0.78);
+      margin-bottom: 36px;
+    }
+
+    .svc-num {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .svc-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      margin-bottom: 18px;
+    }
+
+    .svc-desc {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.95;
+    }
+
+    /* ── STUDIO ── */
+    #studio { overflow: hidden; }
+    .studio-img {
+      width: 100%;
+      height: 65vh;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.92) saturate(0.75);
+    }
+    .studio-cap {
+      text-align: center;
+      padding: 28px;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--bg);
+    }
+
+    /* ── BOOK ── */
+    #book {
+      text-align: center;
+      padding: 144px 52px;
+      background: var(--bg);
+    }
+    .book-inner { max-width: 560px; margin: 0 auto; }
+
+    .book-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(32px, 4.5vw, 56px);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.2;
+      margin-bottom: 22px;
+    }
+
+    .book-sub {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      line-height: 1.9;
+      margin-bottom: 52px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 16px 52px;
+      border: 1px solid var(--text);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 10.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s;
+    }
+    .btn:hover { background: var(--text); color: var(--bg); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 36px 52px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer img { height: 22px; opacity: 0.45; }
+    footer p   { font-size: 11px; letter-spacing: 0.08em; color: var(--muted); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+
+      #hero {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .hero-left { padding: 120px 28px 60px; }
+      .hero-right { height: 60vw; }
+
+      #gallery { grid-template-columns: repeat(2, 1fr); }
+
+      #about {
+        grid-template-columns: 1fr;
+        gap: 44px;
+        padding: 88px 28px;
+      }
+
+      #services { padding: 88px 28px; }
+      .services-grid { grid-template-columns: 1fr; gap: 52px; }
+
+      #book { padding: 100px 28px; }
+
+      footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <img src="logo.png" alt="Mimov Pilates">
+  </div>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#about"    data-en="Philosophy" data-cn="理念">Philosophy</a></li>
+      <li><a href="#services" data-en="Services"   data-cn="课程">Services</a></li>
+      <li><a href="#studio"   data-en="Studio"     data-cn="空间">Studio</a></li>
+      <li><a href="#book"     data-en="Book"       data-cn="预约">Book</a></li>
+    </ul>
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
+      <span class="lang-sep">/</span>
+      <button class="lang-btn" data-lang="cn" onclick="setLang('cn')">中文</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div id="hero">
+  <div class="hero-left">
+    <img class="hero-logo" src="logo.png" alt="Mimov Pilates">
+    <h1 class="hero-tagline"
+        data-en="This is My Movement."
+        data-cn="这是我的律动。">This is My Movement.</h1>
+    <p class="hero-sub"
+       data-en="Polestar-trained guidance to help you find the rhythm and movement that's truly your own."
+       data-cn="由 Polestar 认证教练引导，帮你找到专属自己的节奏与动作语言。">
+      Polestar-trained guidance to help you find the rhythm and movement that's truly your own.
+    </p>
+    <div class="hero-line"></div>
+  </div>
+  <div class="hero-right">
+    <img src="photos/DSC01901.jpg" alt="Mimov Pilates">
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div id="about">
+  <div>
+    <span class="label" data-en="Our Philosophy" data-cn="理念">Our Philosophy</span>
+    <h2 class="about-quote"
+        data-en="Movement is personal. So is your practice."
+        data-cn="动作是私人的。你的练习亦然。">Movement is personal.<br>So is your practice.</h2>
+  </div>
+  <div class="about-body">
+    <p data-en="At Mimov Pilates, we believe that no two bodies move the same way. Rooted in Polestar methodology, every session is built around you — your body, your history, your goals."
+       data-cn="在 Mimov Pilates，我们相信每个身体都有自己的动作语言。以 Polestar 方法论为基础，每一节课都围绕你而建立——你的身体、你的历史、你的目标。">
+      At Mimov Pilates, we believe that no two bodies move the same way. Rooted in Polestar methodology, every session is built around you — your body, your history, your goals.
+    </p>
+    <p data-en="This is not a class you attend. It is a practice you develop — one that moves with you, adapts to you, and ultimately becomes yours."
+       data-cn="这不是你去参加的课程，而是你发展出来的练习——它随你而动，为你而变，最终成为你自己的一部分。">
+      This is not a class you attend. It is a practice you develop — one that moves with you, adapts to you, and ultimately becomes yours.
+    </p>
+  </div>
+</div>
+
+<!-- PHOTO STRIP -->
+<div id="gallery">
+  <div class="gallery-img"><img src="photos/DSC02452.jpg" alt=""></div>
+  <div class="gallery-img"><img src="photos/WechatIMG144.jpg" alt=""></div>
+  <div class="gallery-img"><img src="photos/DSC02449.jpg" alt=""></div>
+  <div class="gallery-img"><img src="photos/WechatIMG143.jpg" alt=""></div>
+</div>
+
+<!-- SERVICES -->
+<div id="services">
+  <div class="services-inner">
+    <span class="label" data-en="What We Offer" data-cn="课程">What We Offer</span>
+    <div class="services-grid">
+      <div class="svc-card">
+        <img class="svc-photo" src="photos/DSC02353.jpg" alt="Private">
+        <span class="svc-num">01</span>
+        <h3 class="svc-title" data-en="Private" data-cn="私人课程">Private</h3>
+        <p class="svc-desc"
+           data-en="A one-on-one session tailored entirely to you. Your instructor maps your movement patterns, works around your needs, and crafts each session as a bespoke experience — no templates, no shortcuts."
+           data-cn="完全为你量身定制的一对一课程。教练分析你的动作模式，围绕你的需求，为每节课打造专属方案——没有模板，没有捷径。">
+          A one-on-one session tailored entirely to you. Your instructor maps your movement patterns, works around your needs, and crafts each session as a bespoke experience — no templates, no shortcuts.
+        </p>
+      </div>
+      <div class="svc-card">
+        <img class="svc-photo" src="photos/DSC01880.jpg" alt="Semi-Private">
+        <span class="svc-num">02</span>
+        <h3 class="svc-title" data-en="Semi-Private" data-cn="半私人课程">Semi-Private</h3>
+        <p class="svc-desc"
+           data-en="Shared with one carefully matched partner, semi-private sessions bring an intimate dual energy while maintaining the depth and close attention of a truly bespoke practice."
+           data-cn="与一位精心配对的伙伴共享，半私人课程在保持精品定制深度的同时，带来亲密的双人练习体验与协同动力。">
+          Shared with one carefully matched partner, semi-private sessions bring an intimate dual energy while maintaining the depth and close attention of a truly bespoke practice.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STUDIO -->
+<div id="studio">
+  <img class="studio-img" src="studio/WechatIMG138.jpg" alt="Mimov Pilates Studio">
+  <div class="studio-cap" data-en="Our Studio" data-cn="我们的空间">Our Studio</div>
+</div>
+
+<!-- BOOK -->
+<div id="book">
+  <div class="book-inner">
+    <span class="label" data-en="Begin" data-cn="开始">Begin</span>
+    <h2 class="book-title"
+        data-en="Ready to find your movement?"
+        data-cn="准备好找到你的律动了吗？">Ready to find your movement?</h2>
+    <p class="book-sub"
+       data-en="Reach out to begin your personalised journey with Mimov Pilates."
+       data-cn="联系我们，开始你与 Mimov Pilates 的专属旅程。">
+      Reach out to begin your personalised journey with Mimov Pilates.
+    </p>
+    <a href="mailto:hello@mimovpilates.com" class="btn"
+       data-en="Get in Touch" data-cn="联系我们">Get in Touch</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <img src="logo.png" alt="Mimov Pilates">
+  <p data-en="© 2026 Mimov Pilates. All rights reserved."
+     data-cn="© 2026 Mimov Pilates 版权所有">© 2026 Mimov Pilates. All rights reserved.</p>
+</footer>
+
+<script>
+  // Generate stucco texture via canvas
+  (function() {
+    const W = 600, H = 600;
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const ctx = c.getContext('2d');
+    const img = ctx.createImageData(W, H);
+
+    function hash(x, y) {
+      const n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
+      return n - Math.floor(n);
+    }
+    function smooth(x, y) {
+      const x0 = Math.floor(x), y0 = Math.floor(y);
+      const fx = x - x0, fy = y - y0;
+      const sx = fx * fx * (3 - 2 * fx);
+      const sy = fy * fy * (3 - 2 * fy);
+      return hash(x0,y0)*(1-sx)*(1-sy) + hash(x0+1,y0)*sx*(1-sy)
+           + hash(x0,y0+1)*(1-sx)*sy   + hash(x0+1,y0+1)*sx*sy;
+    }
+
+    // base: cool gray-white #E9E7E4 → 233, 231, 228
+    const br = 233, bg = 231, bb = 228;
+
+    for (let j = 0; j < H; j++) {
+      for (let i = 0; i < W; i++) {
+        // multi-scale bumps
+        const n1 = (smooth(i/130, j/130) - 0.5) * 22;
+        const n2 = (smooth(i/45,  j/45)  - 0.5) * 12;
+        const n3 = (smooth(i/14,  j/14)  - 0.5) * 6;
+        const grain = (Math.random() - 0.5) * 5;
+        const d = n1 + n2 + n3 + grain;
+
+        const idx = (j * W + i) * 4;
+        img.data[idx]   = Math.max(200, Math.min(255, br + d));
+        img.data[idx+1] = Math.max(198, Math.min(255, bg + d));
+        img.data[idx+2] = Math.max(195, Math.min(255, bb + d));
+        img.data[idx+3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+
+    const url = c.toDataURL('image/png');
+    const bg_css = `url(${url}) repeat`;
+    document.body.style.background = bg_css;
+    document.querySelectorAll('#services, #book, footer').forEach(el => {
+      el.style.background = bg_css;
+    });
+  })();
+
+  function setLang(lang) {
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const text = el.dataset[lang] || el.dataset.en;
+      if (el.classList.contains('about-quote')) {
+        el.innerHTML = lang === 'en'
+          ? 'Movement is personal.<br>So is your practice.'
+          : '动作是私人的。<br>你的练习亦然。';
+      } else {
+        el.textContent = text;
+      }
+    });
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+  }
+</script>
+
+</body>
+</html>
