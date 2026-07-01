@@ -287,6 +287,12 @@
       transition: background 0.3s, color 0.3s;
     }
     .btn:hover { background: var(--text); color: var(--bg); }
+    .btn-primary {
+      background: var(--text);
+      color: var(--bg);
+    }
+    .btn-primary:hover { background: transparent; color: var(--text); }
+    .book-cta { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
 
     /* ── FOOTER ── */
     footer {
@@ -340,7 +346,7 @@
       <li><a href="#about"    data-en="Philosophy" data-cn="理念">Philosophy</a></li>
       <li><a href="#services" data-en="Services"   data-cn="课程">Services</a></li>
       <li><a href="#studio"   data-en="Studio"     data-cn="空间">Studio</a></li>
-      <li><a href="#book"     data-en="Book"       data-cn="预约">Book</a></li>
+      <li><a href="/booking"  data-en="Book"       data-cn="预约">Book</a></li>
     </ul>
     <div class="lang-toggle">
       <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
@@ -444,8 +450,12 @@
        data-cn="联系我们，开始你与 Mimov Pilates 的专属旅程。">
       Reach out to begin your personalised journey with Mimov Pilates.
     </p>
-    <a href="mailto:hello@mimovpilates.com" class="btn"
-       data-en="Get in Touch" data-cn="联系我们">Get in Touch</a>
+    <div class="book-cta">
+      <a href="/booking" class="btn btn-primary"
+         data-en="Book a Trial" data-cn="预约试课">Book a Trial</a>
+      <a href="mailto:hello@mimovpilates.com" class="btn"
+         data-en="Get in Touch" data-cn="联系我们">Get in Touch</a>
+    </div>
   </div>
 </div>
 
